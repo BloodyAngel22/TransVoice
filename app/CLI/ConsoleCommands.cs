@@ -80,7 +80,7 @@ public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
 
         [Description("Сохранить распознанный текст в буфер обмена")]
         [CommandOption("--clipboard")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool Clipboard { get; init; }
     }
 }

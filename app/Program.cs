@@ -1,4 +1,4 @@
-﻿using AudioListener.CLI;
+﻿using app.CLI;
 using Spectre.Console.Cli;
 
 var app = new CommandApp();

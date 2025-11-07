@@ -1,9 +1,9 @@
 using System.ComponentModel;
-using AudioListener.Constants;
-using AudioListener.Core;
+using app.Constants;
+using app.Core;
 using Spectre.Console.Cli;
 
-namespace AudioListener.CLI;
+namespace app.CLI;
 
 public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
 {
@@ -57,7 +57,11 @@ public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
             ui.ShowResult(text);
         }
 
-        ui.Info($"Распознанные данные записаны в output.txt");
+        if (settings.Clipboard)
+        {
+            var xclipSaver = new XClipSaver();
+            xclipSaver.SaveToClipboardFromFile(TransTextConfig.TextFilePath).Wait();
+        }
 
         return 0;
     }
@@ -73,5 +77,10 @@ public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
         [CommandOption("--text")]
         [DefaultValue(false)]
         public bool Text { get; init; }
+
+        [Description("Сохранить распознанный текст в буфер обмена")]
+        [CommandOption("--clipboard")]
+        [DefaultValue(true)]
+        public bool Clipboard { get; init; }
     }
 }

@@ -1,8 +1,8 @@
 using System.Text;
-using AudioListener.Constants;
+using app.Constants;
 using Whisper.net;
 
-namespace AudioListener.Core;
+namespace app.Core;
 
 public class WhisperDecoder
 {
@@ -17,7 +17,16 @@ public class WhisperDecoder
 
         using var whisperFactory = WhisperFactory.FromPath(WhisperModelsConfig.ModelFilePath);
 
-        using var processor = whisperFactory.CreateBuilder().WithLanguage("ru").Build();
+        using var processor = whisperFactory
+            .CreateBuilder()
+            .WithLanguage("ru")
+            .WithThreads(Environment.ProcessorCount)
+            .WithTemperature(0.0f)
+            .WithMaxTokensPerSegment(256)
+            .WithNoSpeechThreshold(0.7f)
+            .WithEntropyThreshold(2.0f)
+            .WithGreedySamplingStrategy()
+            .ParentBuilder.Build();
 
         StringBuilder text = new();
 

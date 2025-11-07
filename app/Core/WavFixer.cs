@@ -1,8 +1,8 @@
-using AudioListener.CLI;
-using AudioListener.Constants;
+using app.CLI;
+using app.Constants;
 using NAudio.Wave;
 
-namespace AudioListener.Core;
+namespace app.Core;
 
 public class WavFixer
 {

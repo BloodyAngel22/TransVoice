@@ -1,4 +1,4 @@
-namespace AudioListener.Core;
+namespace app.Core;
 
 public class FileUtils
 {

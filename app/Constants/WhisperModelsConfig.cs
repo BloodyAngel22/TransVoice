@@ -1,4 +1,4 @@
-namespace AudioListener.Constants;
+namespace app.Constants;
 
 public class WhisperModelsConfig
 {

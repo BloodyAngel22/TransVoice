@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using AudioListener.CLI;
-using AudioListener.Constants;
+using app.CLI;
+using app.Constants;
 
-namespace AudioListener.Core;
+namespace app.Core;
 
 public class AudioRecorder
 {

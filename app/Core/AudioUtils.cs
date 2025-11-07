@@ -1,6 +1,6 @@
 using NAudio.Wave;
 
-namespace AudioListener.Core;
+namespace app.Core;
 
 public static class AudioUtils
 {

@@ -1,7 +1,7 @@
-using AudioListener.Core;
+using app.Core;
 using Spectre.Console;
 
-namespace AudioListener.CLI;
+namespace app.CLI;
 
 public class ConsoleUI
 {

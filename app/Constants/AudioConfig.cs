@@ -1,4 +1,4 @@
-namespace AudioListener.Constants;
+namespace app.Constants;
 
 public static class AudioConfig
 {
@@ -12,18 +12,6 @@ public static class AudioConfig
     {
         string wavFileName = "whisper_recording.wav";
 
-        string publishPath = Path.Combine(AppContext.BaseDirectory, "..", wavFileName);
-
-        if (File.Exists(publishPath))
-            return publishPath;
-
-        string devPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", wavFileName);
-
-        if (File.Exists(devPath))
-            return devPath;
-
-        throw new FileNotFoundException(
-            $"Файл записи не найден по пути: {publishPath} или {devPath}"
-        );
+        return Path.Combine(AppContext.BaseDirectory, wavFileName);
     }
 }

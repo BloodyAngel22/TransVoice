@@ -15,11 +15,59 @@ public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
     {
         var ui = new ConsoleUI();
         var recorder = new AudioRecorder();
+        var converter = new AudioConverter();
         var fixer = new WavFixer();
 
         ui.ShowHeader();
         string outputFile = AudioConfig.WavFilePath;
-        recorder.RecordUntilEnter(outputFile).Wait();
+
+        if (!string.IsNullOrWhiteSpace(settings.InputPath))
+        {
+            string inputPath = settings.InputPath.Trim();
+
+            if (!File.Exists(inputPath))
+            {
+                ui.Error($"Входной файл не найден: {inputPath}");
+                return 1;
+            }
+
+            string fullInput = Path.GetFullPath(inputPath);
+            string fullOutput = Path.GetFullPath(outputFile);
+
+            ui.Section("Преобразование в WAV");
+
+            if (string.Equals(fullInput, fullOutput, StringComparison.OrdinalIgnoreCase))
+            {
+                string tempOutput = fullOutput + ".tmp.wav";
+                bool converted = converter
+                    .ConvertToWav(fullInput, tempOutput)
+                    .GetAwaiter()
+                    .GetResult();
+
+                if (!converted)
+                {
+                    if (File.Exists(tempOutput))
+                        File.Delete(tempOutput);
+                    return 1;
+                }
+
+                File.Delete(fullOutput);
+                File.Move(tempOutput, fullOutput);
+            }
+            else
+            {
+                bool converted = converter
+                    .ConvertToWav(fullInput, fullOutput)
+                    .GetAwaiter()
+                    .GetResult();
+                if (!converted)
+                    return 1;
+            }
+        }
+        else
+        {
+            recorder.RecordUntilEnter(outputFile).Wait();
+        }
 
         if (!File.Exists(outputFile))
         {
@@ -68,6 +116,10 @@ public class RecordAndDecodeCommand : Command<RecordAndDecodeCommand.Setting>
 
     public class Setting : CommandSettings
     {
+        [Description("Входной аудио файл для преобразования в WAV")]
+        [CommandOption("-i|--input")]
+        public string? InputPath { get; init; }
+
         [Description("Показывать информацию о WAV-файле")]
         [CommandOption("--detail")]
         [DefaultValue(false)]

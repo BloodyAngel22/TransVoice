@@ -31,7 +31,7 @@ public class AudioConverter
 
         try
         {
-            _ui.Info("Преобразование через ffmpeg...");
+            _ui.InfoKey(LocalizationKeys.ConverterConverting);
             process.Start();
 
             string error = await process.StandardError.ReadToEndAsync();
@@ -39,22 +39,26 @@ public class AudioConverter
 
             if (process.ExitCode != 0)
             {
-                _ui.Error($"Ошибка ffmpeg (код {process.ExitCode}): {error}");
+                string errorMsg =
+                    $"{Localizer.GetText(LocalizationKeys.ConverterFfmpegError)} {process.ExitCode}: {error}";
+                _ui.Error(errorMsg);
                 return false;
             }
 
             if (!File.Exists(outputPath))
             {
-                _ui.Error("Не удалось создать WAV-файл.");
+                _ui.ErrorKey(LocalizationKeys.ConverterWavNotCreated);
                 return false;
             }
 
-            _ui.Success("Преобразование завершено.");
+            _ui.SuccessKey(LocalizationKeys.ConverterConversionComplete);
             return true;
         }
         catch (Exception ex)
         {
-            _ui.Error($"Ошибка запуска ffmpeg: {ex.Message}");
+            string errorMsg =
+                $"{Localizer.GetText(LocalizationKeys.ConverterFfmpegStartError)} {ex.Message}";
+            _ui.Error(errorMsg);
             return false;
         }
     }

@@ -485,3 +485,8 @@ $RECYCLE.BIN/
 app/Models/*
 !app/Models/.ignore
 
+
+app/OpenVinoModels/*
+!app/OpenVinoModels/.ignore
+
+settings.json

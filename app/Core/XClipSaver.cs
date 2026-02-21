@@ -11,7 +11,7 @@ public class XClipSaver
     {
         if (!File.Exists(filePath))
         {
-            _ui.Error("Файл не найден.");
+            _ui.ErrorKey(LocalizationKeys.XClipFileNotFound);
             return;
         }
 
@@ -32,7 +32,7 @@ public class XClipSaver
 
         try
         {
-            _ui.Info("Копирование в буфер обмена...");
+            _ui.InfoKey(LocalizationKeys.XClipCopying);
             process.Start();
 
             string textToCopy = await File.ReadAllTextAsync(filePath);
@@ -44,17 +44,20 @@ public class XClipSaver
 
             if (process.ExitCode == 0)
             {
-                _ui.Success("Копирование завершено.");
+                _ui.SuccessKey(LocalizationKeys.XClipCompleted);
             }
             else
             {
                 string error = await process.StandardError.ReadToEndAsync();
-                _ui.Error($"Ошибка xclip (код {process.ExitCode}): {error}");
+                string errorMsg =
+                    $"{Localizer.GetText(LocalizationKeys.XClipError)} {process.ExitCode}: {error}";
+                _ui.Error(errorMsg);
             }
         }
         catch (Exception ex)
         {
-            _ui.Error($"Ошибка запуска xclip: {ex.Message}");
+            string errorMsg = $"{Localizer.GetText(LocalizationKeys.XClipStartError)} {ex.Message}";
+            _ui.Error(errorMsg);
         }
     }
 }

@@ -20,7 +20,7 @@ public class WavFixer
                 || reader.WaveFormat.Channels != AudioConfig.Channels
             )
             {
-                _ui.Info("Обнаружен неверный формат аудио — выполняется пересоздание заголовка.");
+                _ui.InfoKey(LocalizationKeys.WavFixerWrongFormat);
             }
 
             string tempPath = path + ".fixed";
@@ -34,7 +34,8 @@ public class WavFixer
         }
         catch (Exception ex)
         {
-            _ui.Error($"Ошибка исправления WAV-заголовка: {ex.Message}");
+            string errorMsg = $"{Localizer.GetText(LocalizationKeys.WavFixerError)} {ex.Message}";
+            _ui.Error(errorMsg);
             return false;
         }
     }

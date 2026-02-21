@@ -41,13 +41,14 @@ public class AudioRecorder
             await process.WaitForExitAsync();
 
             if (!File.Exists(outputPath) || new FileInfo(outputPath).Length < 44)
-                _ui.Error("Файл записи слишком мал или не создан.");
+                _ui.ErrorKey(LocalizationKeys.RecorderFileTooSmall);
             else
-                _ui.Success("Запись завершена успешно.");
+                _ui.SuccessKey(LocalizationKeys.RecorderCompleted);
         }
         catch (Exception ex)
         {
-            _ui.Error($"Ошибка записи: {ex.Message}");
+            string errorMsg = $"{Localizer.GetText(LocalizationKeys.RecorderError)} {ex.Message}";
+            _ui.Error(errorMsg);
             if (!process.HasExited)
                 process.Kill();
         }

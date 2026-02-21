@@ -1,3 +1,5 @@
+using app.Core;
+
 namespace app.Constants;
 
 public class TransTextConfig
@@ -18,8 +20,15 @@ public class TransTextConfig
         if (File.Exists(devPath))
             return devPath;
 
-        throw new FileNotFoundException(
-            $"Файл текста не найден по пути: {publishPath} или {devPath}"
-        );
+        var settings = UserSettings.LoadOrCreate();
+        var language = settings.InterfaceLanguage.ToLower() switch
+        {
+            "en" => Localizer.Language.English,
+            _ => Localizer.Language.Russian,
+        };
+
+        string errorMsg =
+            $"{Localizer.GetTextWithLanguage(LocalizationKeys.ConfigTextFileNotFound, language)} {publishPath} или {devPath}";
+        throw new FileNotFoundException(errorMsg);
     }
 }

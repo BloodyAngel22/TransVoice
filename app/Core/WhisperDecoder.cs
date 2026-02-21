@@ -17,16 +17,36 @@ public class WhisperDecoder
 
         using var whisperFactory = WhisperFactory.FromPath(WhisperModelsConfig.ModelFilePath);
 
-        using var processor = whisperFactory
+        var settings = UserSettings.LoadOrCreate();
+
+        var builder = whisperFactory
             .CreateBuilder()
-            .WithLanguage("ru")
-            .WithThreads(Environment.ProcessorCount)
+            .WithThreads(Environment.ProcessorCount / 2)
             .WithTemperature(0.0f)
             .WithMaxTokensPerSegment(256)
             .WithNoSpeechThreshold(0.7f)
-            .WithEntropyThreshold(2.0f)
-            .WithGreedySamplingStrategy()
-            .ParentBuilder.Build();
+            .WithEntropyThreshold(2.0f);
+
+        if (settings.Language != "auto")
+        {
+            builder = builder.WithLanguage(settings.Language);
+        }
+
+        bool useOpenVino =
+            settings.UseOpenVino
+            && !string.IsNullOrEmpty(WhisperModelsConfig.VinoEncoderFilePath)
+            && File.Exists(WhisperModelsConfig.VinoEncoderFilePath);
+
+        if (useOpenVino)
+        {
+            builder = builder.WithOpenVinoEncoder(
+                openVinoEncoderPath: WhisperModelsConfig.VinoEncoderFilePath,
+                openVinoDevice: "GPU",
+                openVinoCachePath: "ov_cache"
+            );
+        }
+
+        using var processor = builder.WithGreedySamplingStrategy().ParentBuilder.Build();
 
         StringBuilder text = new();
 
